@@ -1,13 +1,13 @@
 from subprocess import Popen
-from pyautogui import moveTo, click, hotkey
+from pyautogui import moveTo, click, hotkey,locateOnScreen,ImageNotFoundException
 from win32gui import FindWindow, SetWindowPos
 from time import sleep
 from win32con import HWND_TOPMOST, SWP_SHOWWINDOW
-
+import share
 
 def popen_launcher():
     # 启动程序
-    launcher = Popen(["E:\webcast_mate\直播伴侣 Launcher.exe"])
+    share.launcher = Popen(["E:\webcast_mate\直播伴侣 Launcher.exe"])
     sleep(5)  # 等待程序启动并加载窗口
 
     # 查找窗口句柄，确保类名和标题都正确
@@ -21,19 +21,34 @@ def popen_launcher():
 
     print("窗口找到！")
     sleep(1)
-    # SetWindowPos(hwnd_launcher, HWND_TOPMOST, 0, 0, 1920, 1080, SWP_SHOWWINDOW)  # 调整窗口大小并置顶
+    SetWindowPos(hwnd_launcher, HWND_TOPMOST, 0, 0, 1920, 1080, SWP_SHOWWINDOW)  # 调整窗口大小并置顶
     moveTo(1370, 800)
     click()
-
+    sleep(1)
+    while True:
+        try:
+            auto1 = locateOnScreen('img/1.png', confidence=0.8)
+            moveTo(auto1)
+            click()
+            break
+        except ImageNotFoundException:
+            print("未找到图片，等待1秒...")
+            sleep(1)
+    sleep(5)
 
 
 def popen_obs():
+    
     # 启动OBS
-    Popen(["D:\obs-studio\bin\64bit\obs64.exe"])
-    sleep(2)  # 等待OBS启动并加载窗口
+    # 指定工作目录
+    obs_path = r"D:\obs-studio\bin\64bit\obs64.exe"
+    working_dir = r"D:\obs-studio\bin\64bit"
+    Popen([obs_path], cwd=working_dir)
+    sleep(3)  # 等待OBS启动并加载窗口
+
     while True:
         # 如果不知道窗口类名，可以将其设为None，查找窗口标题
-        hwnd_launcher = FindWindow("Chrome_WidgetWin_1", "直播伴侣")
+        hwnd_launcher = FindWindow("Qt663QWindowIcon", "OBS 31.0.1 - 配置文件: 1212 - 场景: a1")
         if hwnd_launcher:
             break
         else:
@@ -41,8 +56,47 @@ def popen_obs():
             sleep(1)
     print("窗口找到！")
     SetWindowPos(hwnd_launcher, HWND_TOPMOST, 0, 0, 1623, 1135, SWP_SHOWWINDOW)  # 调整窗口大小并置顶
-
+    sleep(1.5)
     moveTo(809, 419)
+    click()
+    sleep(2)
+    moveTo(150,192)
+    click()
+    while True:
+        try:
+            auto2 = locateOnScreen('img/2.png', confidence=0.8)
+            moveTo(auto2.left + 100, auto2.top)
+            click()
+            break
+        except ImageNotFoundException:
+            print("未找到图片，等待1秒...")
+            sleep(1)
+    hotkey('ctrl', 'a')
+    sleep(0.2)
+    hotkey('ctrl', 'v')
+    sleep(1)
+    moveTo(auto2.left + 100, auto2.top + 80)
+    click()
+    hotkey('ctrl', 'a')
+    hotkey('win', 'v')
+    sleep(1)
+    while True:
+        try:
+            auto3 = locateOnScreen('img/3.png', confidence=0.8)
+            moveTo(auto3.left + 100, auto3.top + 230)
+            click()
+            break
+        except ImageNotFoundException:
+            print("未找到图片，等待1秒...")
+            sleep(1)
+    sleep(1)
+    moveTo(1273,1100)
+    click()
+    sleep(1)
+    moveTo(811,150)
+    click()
+
+
 
 
 
@@ -72,21 +126,22 @@ def popen_webcast_mate():
     moveTo(1207,90)
     click()
     # 等待获取推流码
-    sleep(1)
-    moveTo(250,90)
+    sleep(4)
+    moveTo(250,175)
     click()
     hotkey('ctrl', 'a')
     hotkey('ctrl', 'c')
-    moveTo(250,175)
+    moveTo(250, 90)
     click()
     hotkey('ctrl', 'a')
     hotkey('ctrl', 'c')
     # 关闭webcast_mate
     caster.kill()
+    share.launcher.kill()
 
 
-# popen_obs()
-popen_webcast_mate()
-# popen_launcher()
+popen_obs()
 
+#popen_launcher()
+#popen_webcast_mate()
     

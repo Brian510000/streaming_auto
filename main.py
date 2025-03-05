@@ -1,7 +1,7 @@
 from tkinter import Tk, Button, Label, Frame
 from time import sleep
 from ctypes import windll
-
+from launcher import popen_launcher, popen_obs, popen_webcast_mate
 # 禁用 DPI 缩放
 windll.shcore.SetProcessDpiAwareness(1)
 
@@ -25,7 +25,12 @@ def button_result():
 
 
 def composite():
-    print("一条龙启动")
+    popen_launcher()
+    sleep(2)
+    popen_webcast_mate()
+    sleep(1)
+    
+    popen_obs()
 
 
 # 初始化主窗口

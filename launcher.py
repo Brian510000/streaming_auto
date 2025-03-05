@@ -3,6 +3,7 @@ from pyautogui import moveTo, click, hotkey,locateOnScreen,ImageNotFoundExceptio
 from win32gui import FindWindow, SetWindowPos
 from time import sleep
 from win32con import HWND_TOPMOST, SWP_SHOWWINDOW
+from os import system
 import share
 
 def popen_launcher():
@@ -22,17 +23,27 @@ def popen_launcher():
     print("窗口找到！")
     sleep(1)
     SetWindowPos(hwnd_launcher, HWND_TOPMOST, 0, 0, 1920, 1080, SWP_SHOWWINDOW)  # 调整窗口大小并置顶
-    moveTo(1370, 800)
-    click()
     sleep(1)
     while True:
         try:
-            auto1 = locateOnScreen('img/1.png', confidence=0.8)
+            auto1 = locateOnScreen('img/1.png', confidence=0.95)
             moveTo(auto1)
             click()
-            break
         except ImageNotFoundException:
             print("未找到图片，等待1秒...")
+            sleep(1)
+        try:
+            auto4 = locateOnScreen('img/4.png', confidence=0.8)
+            moveTo(auto4)
+            click()
+        except ImageNotFoundException:
+            print("未找到恢复画面，等待1秒...")
+            sleep(1)
+        try:
+            locateOnScreen('img/5.png', confidence=0.8)
+            break
+        except ImageNotFoundException:
+            print("未找到关播，等待1秒...")
             sleep(1)
     sleep(5)
 
@@ -125,23 +136,27 @@ def popen_webcast_mate():
     sleep(0.5)
     moveTo(1207,90)
     click()
+    sleep(3)
     # 等待获取推流码
-    sleep(4)
+    while True:
+        try:
+            auto6 = locateOnScreen('img/6.png', confidence=0.8)
+            break
+        except ImageNotFoundException:
+            print("未找到图片，等待1秒...")
+            sleep(1)
+    sleep(0.5)
     moveTo(250,175)
     click()
     hotkey('ctrl', 'a')
     hotkey('ctrl', 'c')
+    sleep(0.8)
     moveTo(250, 90)
     click()
     hotkey('ctrl', 'a')
     hotkey('ctrl', 'c')
     # 关闭webcast_mate
     caster.kill()
-    share.launcher.kill()
 
+    system('taskkill /F /IM "直播伴侣.exe"')
 
-popen_obs()
-
-#popen_launcher()
-#popen_webcast_mate()
-    
